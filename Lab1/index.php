@@ -1,4 +1,5 @@
 <?php
+require_once "config file.php";
 $errorMessage = array();
 $flag=0;
 if(isset($_POST["submit"])){
@@ -12,9 +13,8 @@ if(isset($_POST["submit"])){
     }
     if($flag==1){
     $name = $_POST["name"];
-    $NAME_MAX_LENGTH = 100;
     if(isset($_POST['name'])){
-        if(strlen($name)>$NAME_MAX_LENGTH||strlen($name)<5){
+        if(strlen($name)>NAME_MAX_LENGTH||strlen($name)<5){
             $errorMessage[] = "check length of name must be between 5 and 100" ;
         }
     }
@@ -25,10 +25,9 @@ if(isset($_POST["submit"])){
         }
     }
     $message = $_POST["message"];
-    $MESSAGE_MAX_LENGTH = 255;
     if(isset($_POST['message'])){
-        if(strlen($message)>$MESSAGE_MAX_LENGTH||strlen($message)<0){
-            $errorMessage[] = "check length of message must be less than 255";
+        if(strlen($message)>MESSAGE_MAX_LENGTH||strlen($message)<5){
+            $errorMessage[] = "check length of message must be between 5 and 255";
     }   
 }
     if(empty($errorMessage)){
