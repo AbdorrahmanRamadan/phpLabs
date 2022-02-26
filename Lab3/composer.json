@@ -1,0 +1,9 @@
+{
+  "name": "php/lab3",
+  "description": "Php lab3",
+  "license": "AR",
+  "autoload": {
+    "classmap": ["Models"],
+    "files": ["config.php"]
+  }
+}
