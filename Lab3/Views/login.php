@@ -57,7 +57,7 @@
         </label>
         <button type="submit">Login</button>
         <label>
-            <input type="checkbox" checked>
+            <input type="checkbox" <?= $inputs['remember_me'] ?? '' ?>>
         </label> Remember me
     </div>
 </form>
