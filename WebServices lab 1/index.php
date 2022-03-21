@@ -3,8 +3,19 @@
   {
     include "$class.php";
   });
-
   $EgyptianCities = WeatherAPI::get_cities('eg');
+  $long='';
+  $lat='';
+  $result=array();
+  if(isset($_GET['city'])){
+      $lat=$EgyptianCities[$_GET['city']]['coord']['lat'];
+      $long=$EgyptianCities[$_GET['city']]['coord']['lon'];
+      $result= WeatherAPI::get_weather($lat, $long);
+  }else{echo json_encode([
+    'status' => 401,
+    'message' => "Invalid Request"
+]);}
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -16,45 +27,28 @@
   <title>Document</title>
 </head>
 <body>
-<form action="" method="get" id="chooseCityForm">
+<form method="get" id="chooseCityForm">
   <select name="city" id="city">
     <?php for($i = 0; $i < count($EgyptianCities); $i++) { ?>
-      <option value="<?= $i ?>" data-lat="<?= $EgyptianCities[$i]['coord']['lat'] ?>"
-              data-lon="<?= $EgyptianCities[$i]['coord']['lon'] ?>"><?= $EgyptianCities[$i]['name'] ?></option>
+      <option  value="<?php echo $i ?>"><?= $EgyptianCities[$i]['name'] ?></option>
     <?php } ?>
   </select>
   <button type="submit">Show Weather</button>
 </form>
 
-<div id="weatherData"></div>
-<script>
-  const form = document.getElementById("chooseCityForm");
-  const cityWeather = document.getElementById("weatherData");
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const cityIndex = parseInt(form.city.value, 10);
-    const option = document.getElementsByTagName("option")[cityIndex];
-    const lon = option.getAttribute("data-lon");
-    const lat = option.getAttribute("data-lat");
-    fetch(`get_weather.php?lat=${lat}&lon=${lon}`)
-        .then(r => r.json())
-        .then(result => {
-          cityWeather.innerHTML = ' ';
-          cityWeather.innerHTML += `<h2>${result.name}</h2>`;
-          for (let w of result.weather) {
-            cityWeather.innerHTML += `<p>${w.main}: &nbsp; ${w.description}</p>`;
+<div id="weatherData"><?php echo $result->name;
+    echo '</br></br>weather';
+    foreach ($result->weather[0] as $key=> $value) {
+            echo '</br>'.$key.' : '.$value;
           }
-          cityWeather.innerHTML += `<p>Wind Speed: ${result.wind.speed} - Direction: ${result.wind.deg} - Gust: ${result.wind.gust}</p>`;
-          cityWeather.innerHTML += `<p>Temperature: ${(result.main.temp - 273.15).toFixed(2)}</p>`;
-          cityWeather.innerHTML += `<p>Feels Like: ${result.main.feels_like}</p>`;
-          cityWeather.innerHTML += `<p>Pressure: ${result.main.pressure}</p>`;
-          cityWeather.innerHTML += `<p>Humidity: ${result.main.humidity}%</p>`;
-          cityWeather.innerHTML += `<p>Minimum Temperature: ${(result.main.temp_min - 273.15).toFixed(2)}</p>`;
-          cityWeather.innerHTML += `<p>Maximum Temperature: ${(result.main.temp_max - 273.15).toFixed(2)}</p>`;
-          cityWeather.innerHTML += `<p>Pressure on Sea Level: ${result.main.sea_level}</p>`;
-          cityWeather.innerHTML += `<p>Pressure on Ground Level: ${result.main.grnd_level}</p>`;
-        }).catch(console.error);
-  });
-</script>
+    echo '</br></br>main';
+    foreach ($result->main as $key=> $value) {
+        echo '</br>'.$key.' : '.$value;
+    }
+    echo '</br></br>wind';
+    foreach ($result->wind as $key=> $value) {
+        echo '</br>'.$key.' : '.$value;
+    }
+    ?></div>
 </body>
 </html>
