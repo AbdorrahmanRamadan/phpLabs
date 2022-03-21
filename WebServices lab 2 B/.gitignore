@@ -1,0 +1,5 @@
+/vendor/
+/images/
+/Model/
+/.idea/
+composer.lock
